@@ -3,8 +3,8 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 
 import { UsersService } from './../../users/services/users.service';
-import { User } from './../../users/entities/user.entity';
-import { PayloadToken } from './../models/token.model';
+import { User } from 'src/users/entities/user.entity';
+import { PayloadToken } from '../models/token.model';
 
 @Injectable()
 export class AuthService {
@@ -18,8 +18,7 @@ export class AuthService {
     if (user) {
       const isMatch = await bcrypt.compare(password, user.password);
       if (isMatch) {
-        const { password, ...rta } = user;
-        return rta;
+        return user;
       }
     }
     return null;

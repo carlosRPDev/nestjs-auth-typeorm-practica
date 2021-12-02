@@ -7,24 +7,25 @@ import {
 import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
 
-import { ROLES_KEY } from '../decorators/roles.decorator';
+import { ROLE_KEY } from '../decorators/roles.decorator';
 import { PayloadToken } from '../models/token.model';
 import { Role } from '../models/roles.model';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
+
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
-    const roles = this.reflector.get<Role[]>(ROLES_KEY, context.getHandler());
+    // roles = ['admin'] la variable roles es un array con los roles que encontro en la metadata
+    const roles = this.reflector.get<Role[]>(ROLE_KEY, context.getHandler());
     if (!roles) {
       return true;
     }
-    // ['admin', 'customer'];
+    // La amanera de obtenber un request dentro del guardian
     const request = context.switchToHttp().getRequest();
-    const user = request.user as PayloadToken;
-    // { role: 'admin', sub: 1212 }
+    const user = request.user as PayloadToken; // obtendriamos { role: admin, sub: 1212 }
     const isAuth = roles.some((role) => role === user.role);
     if (!isAuth) {
       throw new UnauthorizedException('your role is wrong');

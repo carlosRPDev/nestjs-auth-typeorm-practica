@@ -19,9 +19,16 @@ const API_KEY_PROD = 'PROD1212121SA';
     TypeOrmModule.forRootAsync({
       inject: [config.KEY],
       useFactory: (configService: ConfigType<typeof config>) => {
+        // Lo comentado es configuracion para la conexion bd segmentada dada por variables de entorno
+        //const { user, host, dbName, password, port } = configService.postgres;
         return {
           type: 'postgres',
           url: configService.postgresUrl,
+          //host,
+          //port,
+          //username: user,
+          //password,
+          //database: dbName,
           synchronize: false,
           autoLoadEntities: true,
           ssl: {
@@ -39,11 +46,18 @@ const API_KEY_PROD = 'PROD1212121SA';
     {
       provide: 'PG',
       useFactory: (configService: ConfigType<typeof config>) => {
+        // al igual que en la configuracion con typeorm aqui es con el driver nativo todo lo comentado es para esta configuracion
+        // const { user, host, dbName, password, port } = configService.postgres;
         const client = new Client({
           connectionString: configService.postgresUrl,
           ssl: {
             rejectUnauthorized: false,
           },
+          //user,
+          //host,
+          //database: dbName,
+          //password,
+          //port,
         });
         client.connect();
         return client;
